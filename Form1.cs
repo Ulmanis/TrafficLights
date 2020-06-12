@@ -15,15 +15,32 @@ namespace TrafficLights
         private Timer timerSwitch = null;
         private Timer timerBlink = null;
         private int timeCounter = 0;
+        private int hou = 0, min = 0, sec = 0;
+
         private PictureBox lightToBlink = null;
         private Color colorToCheck = Color.Gray;
+        private Label labelTime = null;
 
         public TrafficLights()
         {
             InitializeComponent();
             InitializeTrafficLights();
+            InitializeLabelTime();
             InitializeTimerSwitch();
             InitializeTimerBlink();
+
+        }
+
+        private void InitializeLabelTime()
+        {
+            labelTime = new Label();
+            labelTime.Font = new Font("Arial", 18, FontStyle.Bold);
+            labelTime.Width = 150;
+            labelTime.Height = 50;
+            labelTime.Top = 20;
+            labelTime.Left = 35;
+            labelTime.Text = "00:00:00";
+            this.Controls.Add(labelTime);
         }
 
         private void InitializeTimerSwitch()
@@ -67,7 +84,40 @@ namespace TrafficLights
 
         private void TimerSwitch_Tick(object sender, EventArgs e)
         {
+            UpdateClock();
             SwitchLights();
+            UpdateLabelTime();
+        }
+
+        private void ResetClock()
+        {
+            sec = 0;
+            min = 0;
+            hou = 0;
+        }
+
+        private void UpdateClock()
+        {
+            sec++;
+            if(sec == 60)
+            {
+                min++;
+                sec = 0;
+            }
+            if(min == 60)
+            {
+                hou++;
+                min = 0;
+            }
+            if(hou == 24)
+            {
+                ResetClock();
+            }
+        }
+
+        private void UpdateLabelTime()
+        {
+            labelTime.Text = $"{hou:00}:{min:00}:{sec:00}";
         }
 
         private void SwitchLights()
